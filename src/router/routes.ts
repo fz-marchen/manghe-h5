@@ -28,6 +28,14 @@ const routes = [
           keepAlive: true,
         },
       },
+      {
+        path: 'lottery',
+        component: () => import('/@/views/lottery/index.vue'),
+        meta: {
+          title: '',
+          keepAlive: true,
+        },
+      },
     ],
   },
   {
