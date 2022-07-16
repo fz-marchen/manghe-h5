@@ -16,7 +16,9 @@ module.exports = {
     },
   },
   extends: ['plugin:vue/vue3-recommended', 'plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'],
+  // plugins: ['prettier'],
   rules: {
+    // 'prettier/prettier': 'error',
     'vue/script-setup-uses-vars': 'error',
     '@typescript-eslint/ban-ts-ignore': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
@@ -68,5 +70,11 @@ module.exports = {
       },
     ],
     'vue/multi-word-component-names': 'off',
+    'no-unused-vars': [
+      'error',
+      // we are only using this rule to check for unused arguments since TS
+      // catches unused variables but not args.
+      { varsIgnorePattern: '.*', args: 'none' },
+    ],
   },
 };

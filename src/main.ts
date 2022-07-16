@@ -5,7 +5,7 @@ import { i18n } from '/@/i18n';
 import router from './router';
 import { setupStore } from '/@/store';
 import './assets/font/iconfont.css';
-import './assets/app.css';
+import './assets/style/base.scss';
 import VueLuckyCanvas from '@lucky-canvas/vue';
 const app = createApp(App);
 app.use(router);

@@ -10,5 +10,6 @@ declare module '@vue/runtime-core' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TitleBar: typeof import('./../src/components/TitleBar/index.vue')['default']
+    VanPopup: typeof import('vant/es')['Popup']
   }
 }
