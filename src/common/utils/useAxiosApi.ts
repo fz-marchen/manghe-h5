@@ -51,17 +51,20 @@ instance.interceptors.response.use(
    */
   (response) => {
     const res = response.data;
-
+    console.log('response', res);
     // if the custom code is not 200, it is judged as an error.
-    if (res.errno !== 200) {
+    if (res.errno == 200) {
+      return res;
+    } else {
+      console.log('res.errMsg', res.errMsg);
       Toast(res.errMsg);
       // 412: Token expired;
       if (res.errno === 412) {
         // store.dispatch('user/userLogout');
       }
-      return Promise.reject(res.errMsg || 'Error');
-    } else {
-      return res;
+      // return Promise.reject(res.errMsg || 'Error');
+
+      // throw new Error(res.errMsg);
     }
   },
   (error) => {

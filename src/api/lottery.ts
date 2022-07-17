@@ -1,4 +1,4 @@
-import useAxiosApi from '../common/utils/useAxiosApi';
+import useAxiosApi from '/@/common/utils/useAxiosApi';
 
 export function productList(data) {
   return useAxiosApi(`/h5/productList`, {
