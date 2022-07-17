@@ -1,0 +1,80 @@
+// 定义混入指令，用于在非nvue环境下的flex定义，因为nvue没有display属性，会报错
+@mixin vue-flex($direction: row) {
+  /* #ifndef APP-NVUE */
+  display: flex;
+  flex-direction: $direction;
+  /* #endif */
+}
+
+@mixin setBorder($clolor: #ebebeb, $r: 0rpx) {
+  // content: '';
+  // position: absolute;
+  // box-sizing: border-box;
+  // top: 0;
+  // left: 0;
+  // width: 200%;
+  // height: 200%;
+  // border: 1px solid $clolor;
+  // border-radius: 4px;
+  // -webkit-transform: scale(0.5);
+  // transform: scale(0.5);
+  // -webkit-transform-origin: top left;
+  // border-radius: $r;
+
+  content: ' ';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  transform: scale(0.5);
+  transform-origin: left top;
+  box-sizing: border-box;
+  border: 1px solid $clolor;
+  border-radius: 4px;
+}
+
+@mixin setBottomBorder($clolor: #ebebeb, $left: 0, $right: 0, $s: solid) {
+  content: ' ';
+  position: absolute;
+  left: $left;
+  bottom: 0;
+  right: $right;
+  height: 2px;
+  border-bottom: 1px $s $clolor;
+  color: $clolor;
+  transform-origin: 0 100%;
+  // transform-origin: 50% 100%;
+  transform: scaleY(0.5);
+}
+
+@mixin setToporder($clolor: #ebebeb, $left: 0, $right: 0, $s: solid) {
+  content: ' ';
+  position: absolute;
+  left: $left;
+  top: 0;
+  right: $right;
+  height: 2px;
+  border-bottom: 1px $s $clolor;
+  color: $clolor;
+  transform-origin: 0 100%;
+  // transform-origin: 50% 100%;
+  transform: scaleY(0.5);
+}
+
+@mixin setLine($num: 1) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @if ($num==1) {
+    white-space: nowrap;
+  }
+
+  @else {
+    display: -webkit-box;
+    -webkit-line-clamp: $num;
+
+    /* autoprefixer: off */
+    -webkit-box-orient: vertical;
+  }
+}

@@ -1,12 +1,11 @@
-import useAxiosApi from '/@/utils/useAxiosApi';
+// import useAxiosApi from '../common/utils/useAxiosApi';
 
+// export * as lottery from './lottery';
 /**
  * 账号密码登录
  * @returns UseAxiosReturn
  */
-export function loginPassword() {
-  return useAxiosApi(`/api/login`, {
-    method: 'POST',
-    data: { name: '123' },
-  });
-}
+
+// export default {
+//   lottery,
+// };

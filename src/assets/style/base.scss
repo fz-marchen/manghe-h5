@@ -1,0 +1,134 @@
+div, input {
+  box-sizing: border-box;
+}
+
+
+
+
+/* start--去除webkit的默认样式--start */
+.u-fix-ios-appearance {
+  -webkit-appearance: none;
+}
+
+/* end--去除webkit的默认样式--end */
+
+/* start--iPhoneX底部安全区定义--start */
+.safe-area-inset-bottom {
+  padding-bottom: 0;
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* end--iPhoneX底部安全区定义--end */
+
+
+// .status-bar-height {
+//   height: var(--status-bar-height);
+// }
+
+// .status-bar-height-pd {
+//   padding-top: var(--status-bar-height);
+// }
+
+/* start--navbar高度--start */
+// .mh-navbar__placeholder {
+//   height: $nav-height;
+// }
+/* end--navbar高度--end */
+
+/* start--文本行数限制--start */
+.mh-line-1 {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mh-line-2 {
+  -webkit-line-clamp: 2;
+}
+
+.mh-line-3 {
+  -webkit-line-clamp: 3;
+}
+
+.mh-line-4 {
+  -webkit-line-clamp: 4;
+}
+
+.mh-line-5 {
+  -webkit-line-clamp: 5;
+}
+
+.mh-line-2,
+.mh-line-3,
+.mh-line-4,
+.mh-line-5 {
+  overflow: hidden;
+  word-break: break-all;
+  text-overflow: ellipsis;
+  display: -webkit-box; // 弹性伸缩盒
+  -webkit-box-orient: vertical; // 设置伸缩盒子元素排列方式
+}
+
+/* end--文本行数限制--end */
+
+/* start--Retina 屏幕下的 1px 边框--start */
+.mh-border,
+.mh-border-bottom,
+.mh-border-left,
+.mh-border-right,
+.mh-border-top,
+.mh-border-top-bottom {
+  position: relative;
+}
+
+.mh-border-bottom:after,
+.mh-border-left:after,
+.mh-border-right:after,
+.mh-border-top-bottom:after,
+.mh-border-top:after,
+.mh-border:after {
+  /* #ifndef APP-NVUE */
+  content: ' ';
+  /* #endif */
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  box-sizing: border-box;
+  -webkit-transform-origin: 0 0;
+  transform-origin: 0 0;
+  // 多加0.1%，能解决有时候边框缺失的问题
+  width: 199.8%;
+  height: 199.7%;
+  transform: scale(0.5, 0.5);
+  border: 0 solid #dcdcdc;
+  z-index: 2;
+}
+
+.mh-border-top:after {
+  border-top-width: 1px;
+}
+
+.mh-border-left:after {
+  border-left-width: 1px;
+}
+
+.mh-border-right:after {
+  border-right-width: 1px;
+}
+
+.mh-border-bottom:after {
+  border-bottom-width: 1px;
+}
+
+.mh-border-top-bottom:after {
+  border-width: 1px 0;
+}
+
+.mh-border:after {
+  border-width: 1px;
+}
+
+/* end--Retina 屏幕下的 1px 边框--end */
+
