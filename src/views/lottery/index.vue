@@ -12,10 +12,8 @@
         'background-image': `url(${licjBgImg})`,
       }"
     >
-      <!-- 大转盘抽奖简易demo -->
+      <div class="lottery-jgg__header">{{ title }}</div>
       <div class="lottery-jgg-body">
-        <!-- <div id="my-lucky" class="prize-top"> </div> -->
-        <!-- <div>{{ deatil.winTitle }}</div> -->
         <lucky-grid
           ref="luckyRef"
           @start="start"
@@ -60,18 +58,33 @@
       </div>
     </van-popup>
 
-    <van-popup v-model:show="showGoods" class="goods-popup">
+    <van-popup v-model:show="showPrize" class="prize-popup">
       <div
-        class="goods-popup-container"
+        class="prize-popup-container"
         :style="{
-          'background-image': `url(${goodPopupImg})`,
+          'background-image': `url(${prizePopupImg})`,
         }"
       >
-        <div class="goods-popup__txt">~ 恭喜获得 ~ </div>
-        <div class="goods-popup__title">兰蔻肌底精华焕亮眼霜</div>
+        <div class="prize-popup__countime">打击时</div>
 
-        <div class="goods-popup__agrin">再来一次</div>
-        <div class="goods-popup__th">马上提货</div>
+        <div class="prize-popup-cell">
+          <input class="prize-popup-cell__input" v-model="mobile" type="text" placeholder="请输入正确的手机号码" />
+        </div>
+        <div class="prize-popup__tip">*注意：手机号填错可能导致订单无法发货</div>
+        <div class="prize-popup__price">新人开盒价：￥{{ salePrice }}</div>
+
+        <div class="prize-popup-btn">
+          <img @click="loginBytel" class="prize-popup-btn__gif" :src="btnGImg" alt="" srcset="" />
+          <img class="prize-popup-btn__tag" :src="tagImg" alt="" srcset="" />
+        </div>
+
+        <div class="prize-popup-footer">
+          <div @click="onCheck" class="prize-popup-footer-left">
+            <img class="prize-popup-footer__icon" v-if="checked" :src="checkedImg" alt="" />
+            <img class="prize-popup-footer__icon" v-else :src="checkImg" alt="" />
+          </div>
+          <div class="prize-popup-footer__service">已阅读并同意《用户隐私协议》</div>
+        </div>
       </div>
     </van-popup>
 
@@ -102,36 +115,24 @@
       </div>
     </van-popup>
 
-    <van-popup v-model:show="showPrize" class="prize-popup">
+    <van-popup v-model:show="showGoods" class="goods-popup">
       <div
-        class="prize-popup-container"
+        class="goods-popup-container"
         :style="{
-          'background-image': `url(${prizePopupImg})`,
+          'background-image': `url(${goodPopupImg})`,
         }"
       >
-        <div class="prize-popup__countime">打击时</div>
+        <div class="goods-popup__txt">~ 恭喜获得 ~ </div>
+        <div class="goods-popup__title">兰蔻肌底精华焕亮眼霜</div>
 
-        <div class="prize-popup-cell">
-          <input class="prize-popup-cell__input" v-model="mobile" type="text" placeholder="请输入正确的手机号码" />
-        </div>
-        <div class="prize-popup__tip">*注意：手机号填错可能导致订单无法发货</div>
-        <div class="prize-popup__price">新人开盒价：￥{{ salePrice }}</div>
-
-        <div class="prize-popup-btn">
-          <img @click="loginBytel" class="prize-popup-btn__gif" :src="btnGImg" alt="" srcset="" />
-          <img class="prize-popup-btn__tag" :src="tagImg" alt="" srcset="" />
-        </div>
-
-        <div class="prize-popup-footer">
-          <div>11111</div>
-          <div class="prize-popup-footer__service">已阅读并同意《用户隐私协议》</div>
-        </div>
+        <div class="goods-popup__agrin">再来一次</div>
+        <div class="goods-popup__th">马上提货</div>
       </div>
     </van-popup>
 
-    <div @click="launchGoodsPopup">打开商品</div>
+    <!-- <div @click="launchGoodsPopup">打开商品</div>
     <div @click="launchOrderPopup">打开order</div>
-    <div @click="launchPrizePopup">打开prize</div>
+    <div @click="launchPrizePopup">打开prize</div> -->
 
     <div></div>
   </div>
@@ -141,8 +142,6 @@
   import { ref, reactive, toRefs, onMounted } from 'vue';
   import { mhImg } from '/@/common/utils/oss';
   import * as lottery from '/@/api/lottery';
-  import useAxiosApi from '/@/common/utils/useAxiosApi';
-  import { useAxios } from '@vueuse/integrations/useAxios';
   import { useRoute } from 'vue-router';
   import { useCommonStore } from '/@/store/modules/common';
   const commonStore = useCommonStore();
@@ -155,7 +154,8 @@
       bgImg: 'h5/lottery/bg.jpg',
       titleImg: 'h5/lottery/title.png',
       tagImg: 'h5/lottery/tag.png',
-
+      checkImg: 'h5/lottery/check.png',
+      checkedImg: 'h5/lottery/checked.png',
       btnGImg: 'h5/lottery/btn-g.gif',
       licjBgImg: 'h5/lottery/licj-bg.png',
       goodPopupImg: 'h5/lottery/good-popup.png',
@@ -169,10 +169,11 @@
     showPrize: false,
     goodsList: [],
     salePrice: '',
-    deatil: {},
+    title: '',
     prizes: [],
     mobile: '',
     mangheId: '',
+    checked: true,
   });
   const imgs: any = mhImg({
     licjBtnImg: 'h5/lottery/licj-btn.png',
@@ -188,9 +189,12 @@
     showPrize,
     mangheId,
     mobile,
-    deatil,
+    title,
     salePrice,
     prizes,
+    checked,
+    checkImg,
+    checkedImg,
     prizePopupImg,
     goodPopupImg,
     licjBgImg,
@@ -208,271 +212,142 @@
     if (!platform) {
       commonStore.setPlatform('547_WX_7fbd813ef6762e0e813f39a2c653236d');
     }
-    const res = await lottery.productList({});
+    const { data } = await lottery.productList({});
 
-    const mangheDtlBean = res.data.value.mangheDtlBean;
+    const value = data.value;
+    if (value) {
+      const mangheDtlBean = value.mangheDtlBean;
+      const productList = mangheDtlBean.productList;
 
-    const productList = mangheDtlBean.productList;
+      title.value = value.winTitle;
+      salePrice.value = mangheDtlBean.salePrice;
+      mangheId.value = mangheDtlBean.mangheId;
+      prizes.value = [
+        {
+          x: 0,
+          y: 0,
+          borderRadius: '0px',
+          imgs: [
+            {
+              src: productList[0].thumbnailImgUrl,
+              width: '96%',
+              height: '96%',
+              top: '2%',
+              left: '2%',
 
-    salePrice.value = mangheDtlBean.salePrice;
-    mangheId.value = mangheDtlBean.mangheId;
-    prizes.value = [
-      {
-        x: 0,
-        y: 0,
-        borderRadius: '0px',
-        imgs: [
-          {
-            src: productList[0].thumbnailImgUrl,
-            width: '96%',
-            height: '96%',
-            top: '2%',
-            left: '2%',
+              // top: '25%',
+            },
+          ],
+        },
+        {
+          x: 1,
+          y: 0,
+          borderRadius: '0px',
+          imgs: [
+            {
+              src: productList[1].thumbnailImgUrl,
+              width: '96%',
+              height: '96%',
+              // top: '25%',
+              top: '2%',
+              left: '2%',
+            },
+          ],
+        },
+        {
+          x: 2,
+          y: 0,
+          borderRadius: '0px',
+          imgs: [
+            {
+              src: productList[2].thumbnailImgUrl,
+              width: '96%',
+              height: '96%',
+              // top: '25%',
+              top: '2%',
+              left: '2%',
+            },
+          ],
+        },
+        {
+          x: 2,
+          y: 1,
+          borderRadius: '0px',
+          imgs: [
+            {
+              src: productList[3].thumbnailImgUrl,
+              width: '96%',
+              height: '96%',
+              // top: '25%',
+              top: '2%',
+              left: '2%',
+            },
+          ],
+        },
+        {
+          x: 2,
+          y: 2,
+          borderRadius: '0px',
+          imgs: [
+            {
+              src: productList[4].thumbnailImgUrl,
+              width: '96%',
+              height: '96%',
+              // top: '25%',
+              top: '2%',
+              left: '2%',
+            },
+          ],
+        },
+        {
+          x: 1,
+          y: 2,
+          borderRadius: '0px',
+          imgs: [
+            {
+              src: productList[5].thumbnailImgUrl,
+              width: '96%',
+              height: '96%',
+              // top: '25%',
+              top: '2%',
+              left: '2%',
+            },
+          ],
+        },
+        {
+          x: 0,
+          y: 2,
+          borderRadius: '0px',
+          imgs: [
+            {
+              src: productList[6].thumbnailImgUrl,
+              width: '96%',
+              height: '96%',
+              // top: '25%',
+              top: '2%',
+              left: '2%',
+            },
+          ],
+        },
+        {
+          x: 0,
+          y: 1,
+          borderRadius: '0px',
+          imgs: [
+            {
+              src: productList[7].thumbnailImgUrl,
+              width: '96%',
+              height: '96%',
+              // top: '25%',
+              top: '2%',
+              left: '2%',
+            },
+          ],
+        },
+      ];
 
-            // top: '25%',
-          },
-        ],
-      },
-      {
-        x: 1,
-        y: 0,
-        borderRadius: '0px',
-        imgs: [
-          {
-            src: productList[1].thumbnailImgUrl,
-            width: '96%',
-            height: '96%',
-            // top: '25%',
-            top: '2%',
-            left: '2%',
-          },
-        ],
-      },
-      {
-        x: 2,
-        y: 0,
-        borderRadius: '0px',
-        imgs: [
-          {
-            src: productList[2].thumbnailImgUrl,
-            width: '96%',
-            height: '96%',
-            // top: '25%',
-            top: '2%',
-            left: '2%',
-          },
-        ],
-      },
-      {
-        x: 2,
-        y: 1,
-        borderRadius: '0px',
-        imgs: [
-          {
-            src: productList[3].thumbnailImgUrl,
-            width: '96%',
-            height: '96%',
-            // top: '25%',
-            top: '2%',
-            left: '2%',
-          },
-        ],
-      },
-      {
-        x: 2,
-        y: 2,
-        borderRadius: '0px',
-        imgs: [
-          {
-            src: productList[4].thumbnailImgUrl,
-            width: '96%',
-            height: '96%',
-            // top: '25%',
-            top: '2%',
-            left: '2%',
-          },
-        ],
-      },
-      {
-        x: 1,
-        y: 2,
-        borderRadius: '0px',
-        imgs: [
-          {
-            src: productList[5].thumbnailImgUrl,
-            width: '96%',
-            height: '96%',
-            // top: '25%',
-            top: '2%',
-            left: '2%',
-          },
-        ],
-      },
-      {
-        x: 0,
-        y: 2,
-        borderRadius: '0px',
-        imgs: [
-          {
-            src: productList[6].thumbnailImgUrl,
-            width: '96%',
-            height: '96%',
-            // top: '25%',
-            top: '2%',
-            left: '2%',
-          },
-        ],
-      },
-      {
-        x: 0,
-        y: 1,
-        borderRadius: '0px',
-        imgs: [
-          {
-            src: productList[7].thumbnailImgUrl,
-            width: '96%',
-            height: '96%',
-            // top: '25%',
-            top: '2%',
-            left: '2%',
-          },
-        ],
-      },
-    ];
-
-    // lottery.productList({}).then((res) => {
-    //   const mangheDtlBean = res.data.value.mangheDtlBean;
-
-    //   const productList = mangheDtlBean.productList;
-
-    //   salePrice.value = mangheDtlBean.salePrice;
-    //   mangheId.value = mangheDtlBean.mangheId;
-    //   prizes.value = [
-    //     {
-    //       x: 0,
-    //       y: 0,
-    //       borderRadius: '0px',
-    //       imgs: [
-    //         {
-    //           src: productList[0].thumbnailImgUrl,
-    //           width: '96%',
-    //           height: '96%',
-    //           top: '2%',
-    //           left: '2%',
-
-    //           // top: '25%',
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       x: 1,
-    //       y: 0,
-    //       borderRadius: '0px',
-    //       imgs: [
-    //         {
-    //           src: productList[1].thumbnailImgUrl,
-    //           width: '96%',
-    //           height: '96%',
-    //           // top: '25%',
-    //           top: '2%',
-    //           left: '2%',
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       x: 2,
-    //       y: 0,
-    //       borderRadius: '0px',
-    //       imgs: [
-    //         {
-    //           src: productList[2].thumbnailImgUrl,
-    //           width: '96%',
-    //           height: '96%',
-    //           // top: '25%',
-    //           top: '2%',
-    //           left: '2%',
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       x: 2,
-    //       y: 1,
-    //       borderRadius: '0px',
-    //       imgs: [
-    //         {
-    //           src: productList[3].thumbnailImgUrl,
-    //           width: '96%',
-    //           height: '96%',
-    //           // top: '25%',
-    //           top: '2%',
-    //           left: '2%',
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       x: 2,
-    //       y: 2,
-    //       borderRadius: '0px',
-    //       imgs: [
-    //         {
-    //           src: productList[4].thumbnailImgUrl,
-    //           width: '96%',
-    //           height: '96%',
-    //           // top: '25%',
-    //           top: '2%',
-    //           left: '2%',
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       x: 1,
-    //       y: 2,
-    //       borderRadius: '0px',
-    //       imgs: [
-    //         {
-    //           src: productList[5].thumbnailImgUrl,
-    //           width: '96%',
-    //           height: '96%',
-    //           // top: '25%',
-    //           top: '2%',
-    //           left: '2%',
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       x: 0,
-    //       y: 2,
-    //       borderRadius: '0px',
-    //       imgs: [
-    //         {
-    //           src: productList[6].thumbnailImgUrl,
-    //           width: '96%',
-    //           height: '96%',
-    //           // top: '25%',
-    //           top: '2%',
-    //           left: '2%',
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       x: 0,
-    //       y: 1,
-    //       borderRadius: '0px',
-    //       imgs: [
-    //         {
-    //           src: productList[7].thumbnailImgUrl,
-    //           width: '96%',
-    //           height: '96%',
-    //           // top: '25%',
-    //           top: '2%',
-    //           left: '2%',
-    //         },
-    //       ],
-    //     },
-    //   ];
-    // });
-
-    getAllGoods();
+      getAllGoods();
+    }
   });
 
   const luckyRef = ref();
@@ -538,29 +413,34 @@
     showGoodsList.value = false;
   }
 
-  function launchOrderPopup() {
-    lottery
-      .openBlindBoxToPay({
-        mangheId: mangheId.value,
-      })
-      .then((res) => {
-        showOrder.value = true;
-      });
+  async function launchOrderPopup() {
+    const { data } = await lottery.openBlindBoxToPay({
+      mangheId: mangheId.value,
+    });
+    const { tradeCode } = data.value || {};
+    if (tradeCode) {
+      // const { data } = await lottery.queryHeguiPayResult({ tradeCode });
+      // console.log('data', data);
+      showOrder.value = true;
+    }
   }
   function launchPrizePopup() {
     showPrize.value = true;
+  }
+  function onCheck() {
+    checked.value = !checked.value;
   }
 
   async function loginBytel() {
     const { data, then } = lottery.addH5User({
       mobile: mobile.value,
     });
-    then((res) => {
-      console.log('res', res);
-      console.log('data', data);
+    then(() => {
       const value = data.value;
       if (value) {
-        console.log('value', value);
+        commonStore.setUser(value);
+
+        launchOrderPopup();
       }
     });
   }
@@ -608,9 +488,19 @@
     &-jgg {
       width: 734px;
       height: 1104px;
-      padding-top: 380px;
+      padding-top: 164px;
       background-repeat: no-repeat;
       background-size: 734px 1104px;
+      &__header {
+        height: 50px;
+        margin-bottom: 166px;
+        font-size: 36px;
+        font-family: PingFangSC-Semibold, PingFang SC;
+        font-weight: 600;
+        color: #ffffff;
+        line-height: 50px;
+        text-align: center;
+      }
       &-body {
         display: flex;
         justify-content: center;
@@ -906,6 +796,7 @@
       &__input {
         width: 442px;
         height: 70px;
+        padding-left: 64px;
         background: rgba(95, 121, 253, 0.19);
         border-radius: 36px;
         border: 2px solid rgba(147, 75, 209, 0.3);
@@ -955,6 +846,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      &-left {
+        width: 24px;
+        height: 24px;
+        margin-right: 4px;
+      }
+      &__icon {
+        display: block;
+        width: 24px;
+        height: 24px;
+      }
       &__service {
         height: 28px;
         font-size: 20px;

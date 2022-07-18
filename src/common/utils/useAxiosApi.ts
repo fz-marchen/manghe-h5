@@ -19,15 +19,20 @@ instance.interceptors.request.use(
     // do something before request is sent
     // const token = store.state.user.token;
     // console.log('store', store.state.value.common);
-    const { platform } = commonStore;
+    const { platform, token } = commonStore;
+
     // console.log('commonStore', commonStore.platform);
+    const headers: any = {};
     if (platform) {
-      // let each request carry token
-      config.headers = {
-        ...config.headers,
-        platform,
-      };
+      headers.platform = platform;
     }
+    if (token) {
+      headers.token = token;
+    }
+    config.headers = {
+      ...config.headers,
+      ...headers,
+    };
     return config;
   },
   (error) => {

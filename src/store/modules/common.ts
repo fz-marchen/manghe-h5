@@ -10,6 +10,7 @@ import { defineStore } from 'pinia';
 interface StoreUser {
   platform: string;
   user: Object;
+  _token: string;
 }
 
 export const useCommonStore = defineStore({
@@ -18,10 +19,11 @@ export const useCommonStore = defineStore({
     // token: token,
     platform: '',
     user: {},
+    _token: '',
   }),
   getters: {
     token(state): any {
-      return state.user.token;
+      return state._token || localStorage.getItem('token');
     },
   },
   actions: {
@@ -29,8 +31,10 @@ export const useCommonStore = defineStore({
       this.platform = platform ? platform : '';
     },
 
-    setUser(user: string) {
+    setUser(user) {
       this.user = user ? user : '';
+      this._token = user.token;
+      localStorage.setItem('token', user.token);
     },
   },
 });
