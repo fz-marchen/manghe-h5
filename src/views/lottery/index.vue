@@ -552,30 +552,17 @@
   }
 
   async function loginBytel() {
-    const { data, isLoading, isFinished, execute } = lottery.addH5User({
+    const { data, then } = lottery.addH5User({
       mobile: mobile.value,
     });
-    // .then((res) => {
-    //   console.log('res', res);
-
-    // })
-    // .catch((error) => {
-    //   console.log(';dfchfhfgh');
-    // });
-    // debugger;
-    // const { data, isLoading, isFinished, execute } = useAxios('https://jsonplaceholder.typicode.com/todos1/1');
-    // console.log('data', data);
-    // console.log('isLoading', isLoading);
-    // console.log('isFinished', isFinished);
-    // const
-    // try {
-    //   const { data } = await lottery.addH5User({
-    //     mobile: mobile.value,
-    //   });
-    //   console.log('data', data);
-    // } catch (error) {
-    //   console.log('error');
-    // }
+    then((res) => {
+      console.log('res', res);
+      console.log('data', data);
+      const value = data.value;
+      if (value) {
+        console.log('value', value);
+      }
+    });
   }
 
   function launchGoodsPopup() {

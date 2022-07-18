@@ -62,7 +62,7 @@ instance.interceptors.response.use(
       if (res.errno === 412) {
         // store.dispatch('user/userLogout');
       }
-      // return Promise.reject(res.errMsg || 'Error');
+      return Promise.reject(res.errMsg || 'Error');
 
       // throw new Error(res.errMsg);
     }
