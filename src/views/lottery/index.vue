@@ -58,15 +58,29 @@
       </div>
     </van-popup>
 
-    <van-popup v-model:show="showPrize" class="prize-popup">
+    <van-popup :close-on-click-overlay="false" v-model:show="showPrize" class="prize-popup">
       <div
         class="prize-popup-container"
         :style="{
           'background-image': `url(${prizePopupImg})`,
         }"
       >
-        <div class="prize-popup__countime">打击时</div>
-
+        <img class="prize-popup__close" @click="closePrizePopup" :src="closeImg" alt="" srcset="" />
+        <div class="prize-popup-countime">
+          <van-count-down :time="time">
+            <template #default="timeData">
+              <view class="prize-popup-countime-warp">
+                <span>请在</span>
+                <span class="block">{{ timeData.hours }}</span>
+                <span class="colon">时</span>
+                <span class="block">{{ timeData.minutes }}</span>
+                <span class="colon">分</span>
+                <span class="block">{{ timeData.seconds }}</span>
+                <span>秒内开启</span>
+              </view>
+            </template>
+          </van-count-down>
+        </div>
         <div class="prize-popup-cell">
           <input class="prize-popup-cell__input" v-model="mobile" type="text" placeholder="请输入正确的手机号码" />
         </div>
@@ -93,19 +107,19 @@
         <div class="order-popup__title">新人开盒</div>
         <div class="order-popup-price">
           <div class="order-popup-price__l">￥</div>
-          <div class="order-popup-price__r">39.90</div>
+          <div class="order-popup-price__r">{{ salePrice }}</div>
         </div>
 
         <div class="order-popup__zffs">支付方式</div>
 
         <div class="order-popup-list">
           <div class="order-popup-item">
-            <div class="order-popup-item__l"> 111</div>
+            <img class="order-popup-item__l" :src="wechatImg" alt="" srcset="" />
             <div class="order-popup-item__m"> 微信支付</div>
             <div class="order-popup-item-r"> 222</div>
           </div>
           <div class="order-popup-item">
-            <div class="order-popup-item__l"> 111</div>
+            <img class="order-popup-item__l" :src="alipayImg" alt="" srcset="" />
             <div class="order-popup-item__m"> 支付宝支付</div>
             <div class="order-popup-item-r"> 222</div>
           </div>
@@ -156,6 +170,8 @@
       tagImg: 'h5/lottery/tag.png',
       checkImg: 'h5/lottery/check.png',
       checkedImg: 'h5/lottery/checked.png',
+      wechatImg: 'h5/lottery/wechat.png',
+      alipayImg: 'h5/lottery/alipay.png',
       btnGImg: 'h5/lottery/btn-g.gif',
       licjBgImg: 'h5/lottery/licj-bg.png',
       goodPopupImg: 'h5/lottery/good-popup.png',
@@ -174,6 +190,7 @@
     mobile: '',
     mangheId: '',
     checked: true,
+    time: 30 * 60 * 60 * 1000,
   });
   const imgs: any = mhImg({
     licjBtnImg: 'h5/lottery/licj-btn.png',
@@ -193,6 +210,9 @@
     salePrice,
     prizes,
     checked,
+    time,
+    wechatImg,
+    alipayImg,
     checkImg,
     checkedImg,
     prizePopupImg,
@@ -414,18 +434,13 @@
   }
 
   async function launchOrderPopup() {
-    const { data } = await lottery.openBlindBoxToPay({
-      mangheId: mangheId.value,
-    });
-    const { tradeCode } = data.value || {};
-    if (tradeCode) {
-      // const { data } = await lottery.queryHeguiPayResult({ tradeCode });
-      // console.log('data', data);
-      showOrder.value = true;
-    }
+    showOrder.value = true;
   }
   function launchPrizePopup() {
     showPrize.value = true;
+  }
+  function closePrizePopup() {
+    showPrize.value = false;
   }
   function onCheck() {
     checked.value = !checked.value;
@@ -449,8 +464,16 @@
     showGoods.value = true;
   }
 
-  function buy() {
-    launchGoodsPopup();
+  async function buy() {
+    const { data } = await lottery.openBlindBoxToPay({
+      mangheId: mangheId.value,
+    });
+    const { tradeCode } = data.value || {};
+    if (tradeCode) {
+      // const { data } = await lottery.queryHeguiPayResult({ tradeCode });
+      // console.log('buy data', data);
+      // launchGoodsPopup();
+    }
   }
 </script>
 
@@ -729,7 +752,6 @@
         width: 48px;
         height: 48px;
         margin-right: 16px;
-        background: #d8d8d8;
       }
       &__m {
         flex: 1;
@@ -779,14 +801,29 @@
       background-repeat: no-repeat;
       background-size: 690px 1287px;
     }
-
-    &__countime {
+    &__close {
+      position: absolute;
+      width: 58px;
+      height: 58px;
+      right: 0;
+      top: 0;
+      opacity: 0.2;
+    }
+    &-countime {
       width: 554px;
       height: 78px;
       margin: 0 auto 748px;
       background: rgba(54, 24, 130, 0.85);
       border-radius: 40px;
       border: 2px solid #a23afe;
+      &-warp {
+        height: 78px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 36px;
+      }
     }
 
     &-cell {
