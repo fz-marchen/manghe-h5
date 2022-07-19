@@ -67,16 +67,18 @@
       >
         <img class="prize-popup__close" @click="closePrizePopup" :src="closeImg" alt="" srcset="" />
         <div class="prize-popup-countime">
-          <van-count-down :time="time">
+          <van-count-down :time="time" millisecond>
             <template #default="timeData">
               <view class="prize-popup-countime-warp">
                 <span>请在</span>
-                <span class="block">{{ timeData.hours }}</span>
-                <span class="colon">时</span>
+                <!-- <span class="block">{{ timeData.hours }}</span>
+                <span class="colon">时</span> -->
                 <span class="block">{{ timeData.minutes }}</span>
                 <span class="colon">分</span>
                 <span class="block">{{ timeData.seconds }}</span>
-                <span>秒内开启</span>
+                <span>秒</span>
+                <span class="prize-popup-countime__milliseconds">{{ timeData.milliseconds }}</span>
+                <span>内开启</span>
               </view>
             </template>
           </van-count-down>
@@ -153,7 +155,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive, toRefs, onMounted } from 'vue';
+  import { ref, reactive, toRefs, onMounted, onUnmounted } from 'vue';
   import { mhImg } from '/@/common/utils/oss';
   import * as lottery from '/@/api/lottery';
   import { useRoute } from 'vue-router';
@@ -190,7 +192,7 @@
     mobile: '',
     mangheId: '',
     checked: true,
-    time: 30 * 60 * 60 * 1000,
+    time: 0,
   });
   const imgs: any = mhImg({
     licjBtnImg: 'h5/lottery/licj-btn.png',
@@ -227,6 +229,15 @@
   } = toRefs(stage);
 
   onMounted(async () => {
+    const countime = localStorage.getItem('countime');
+    if (countime) {
+      time.value = Number(countime);
+    } else {
+      const countime1 = 12 * 60 * 1000;
+      localStorage.setItem('time', countime1 + '');
+      time.value = countime1;
+    }
+
     const { platform } = route.query;
     commonStore.setPlatform(platform + '');
     if (!platform) {
@@ -368,6 +379,9 @@
 
       getAllGoods();
     }
+  });
+  onUnmounted(() => {
+    localStorage.setItem('time', 1 * 60 * 1000 + '');
   });
 
   const luckyRef = ref();
@@ -817,12 +831,17 @@
       border-radius: 40px;
       border: 2px solid #a23afe;
       &-warp {
+        width: 554px;
         height: 78px;
+        padding-left: 70px;
         display: flex;
         align-items: center;
-        justify-content: center;
+        // justify-content: center;
         color: #fff;
         font-size: 36px;
+      }
+      &__milliseconds {
+        width: 60px;
       }
     }
 
