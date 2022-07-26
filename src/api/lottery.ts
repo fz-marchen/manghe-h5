@@ -38,3 +38,10 @@ export function queryHeguiPayResult(data) {
     data,
   });
 }
+
+export function getWxCodeToPay(data) {
+  return useAxiosApi(`https://mpauth.wux7.com/userH5/getWxCodeToPay`, {
+    method: 'POST',
+    data,
+  });
+}

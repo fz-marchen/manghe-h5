@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import { IMG_BASE_URL } from '/@/common/constant/index';
 export function imgOssAppend(url = '', params) {
   url = url && url.trim();
@@ -5,7 +7,7 @@ export function imgOssAppend(url = '', params) {
 
   const [imgUrl = ''] = (url && url.split('?')) || [];
 
-  let splitParams = [];
+  let splitParams: any = [];
   if (typeof params === 'number') {
     splitParams = [params];
   } else {
@@ -16,6 +18,7 @@ export function imgOssAppend(url = '', params) {
 
 export function mhImgOss() {
   const [params, ...rest] = arguments;
+
   const mhImgs = mhImg.apply(null, rest);
   if (!params) return mhImgs;
 

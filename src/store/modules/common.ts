@@ -8,7 +8,7 @@ import { defineStore } from 'pinia';
 // const token = useCookies().get(VITE_TOKEN_KEY as string);
 
 interface StoreUser {
-  platform: string;
+  _platform: string;
   user: Object;
   _token: string;
 }
@@ -17,7 +17,7 @@ export const useCommonStore = defineStore({
   id: 'common',
   state: (): StoreUser => ({
     // token: token,
-    platform: '',
+    _platform: '',
     user: {},
     _token: '',
   }),
@@ -25,10 +25,16 @@ export const useCommonStore = defineStore({
     token(state): any {
       return state._token || localStorage.getItem('token');
     },
+    platform(state): any {
+      return state._platform || localStorage.getItem('platform');
+    },
   },
   actions: {
-    setPlatform(platform: string) {
-      this.platform = platform ? platform : '';
+    setPlatform(_platform: string) {
+      this._platform = _platform ? _platform : '';
+
+      console.log('_platform', _platform);
+      localStorage.setItem('platform', _platform);
     },
 
     setUser(user) {

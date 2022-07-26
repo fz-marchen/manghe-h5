@@ -2,14 +2,14 @@
   <div
     class="lottery"
     :style="{
-      'background-image': `url(${bgImg})`,
+      'background-image': `url(${imgs.bgImg})`,
     }"
   >
-    <img class="lottery-title" :src="titleImg" />
+    <img class="lottery-title" :src="imgs.titleImg" />
     <div
       class="lottery-jgg"
       :style="{
-        'background-image': `url(${licjBgImg})`,
+        'background-image': `url(${imgs.licjBgImg})`,
       }"
     >
       <div class="lottery-jgg__header">{{ title }}</div>
@@ -28,7 +28,7 @@
         />
       </div>
       <div class="lottery-jgg-footer">
-        <img @click="launchGoodsListPopup" class="lottery-jgg__look" :src="licjLookImg" alt="" srcset="" />
+        <img @click="launchGoodsListPopup" class="lottery-jgg__look" :src="imgs.licjLookImg" alt="" srcset="" />
       </div>
     </div>
 
@@ -36,7 +36,7 @@
     <van-popup v-model:show="showGoodsList" class="goods-list-popup">
       <div class="goods-list-popup-container">
         <div class="goods-list-popup-header">
-          <img class="goods-list-popup__close" @click="closeGoodsListPopup" :src="closeImg" alt="" srcset="" />
+          <img class="goods-list-popup__close" @click="closeGoodsListPopup" :src="imgs.closeImg" alt="" srcset="" />
         </div>
         <div class="goods-list-popup-body">
           <div class="goods-list-popup__title">全部商品</div>
@@ -62,10 +62,10 @@
       <div
         class="prize-popup-container"
         :style="{
-          'background-image': `url(${prizePopupImg})`,
+          'background-image': `url(${imgs.prizePopupImg})`,
         }"
       >
-        <img class="prize-popup__close" @click="closePrizePopup" :src="closeImg" alt="" srcset="" />
+        <img class="prize-popup__close" @click="closePrizePopup" :src="imgs.closeImg" alt="" srcset="" />
         <div class="prize-popup-countime">
           <van-count-down :time="time" millisecond>
             <template #default="timeData">
@@ -90,14 +90,14 @@
         <div class="prize-popup__price">新人开盒价：￥{{ salePrice }}</div>
 
         <div class="prize-popup-btn">
-          <img @click="loginBytel" class="prize-popup-btn__gif" :src="btnGImg" alt="" srcset="" />
-          <img class="prize-popup-btn__tag" :src="tagImg" alt="" srcset="" />
+          <img @click="loginBytel" class="prize-popup-btn__gif" :src="imgs.btnGImg" alt="" srcset="" />
+          <img class="prize-popup-btn__tag" :src="imgs.tagImg" alt="" srcset="" />
         </div>
 
         <div class="prize-popup-footer">
           <div @click="onCheck" class="prize-popup-footer-left">
-            <img class="prize-popup-footer__icon" v-if="checked" :src="checkedImg" alt="" />
-            <img class="prize-popup-footer__icon" v-else :src="checkImg" alt="" />
+            <img class="prize-popup-footer__icon" v-if="checked" :src="imgs.checkedImg" alt="" />
+            <img class="prize-popup-footer__icon" v-else :src="imgs.checkImg" alt="" />
           </div>
           <div class="prize-popup-footer__service">已阅读并同意《用户隐私协议》</div>
         </div>
@@ -116,12 +116,12 @@
 
         <div class="order-popup-list">
           <div class="order-popup-item">
-            <img class="order-popup-item__l" :src="wechatImg" alt="" srcset="" />
+            <img class="order-popup-item__l" :src="imgs.wechatImg" alt="" srcset="" />
             <div class="order-popup-item__m"> 微信支付</div>
             <div class="order-popup-item-r"> 222</div>
           </div>
           <div class="order-popup-item">
-            <img class="order-popup-item__l" :src="alipayImg" alt="" srcset="" />
+            <img class="order-popup-item__l" :src="imgs.alipayImg" alt="" srcset="" />
             <div class="order-popup-item__m"> 支付宝支付</div>
             <div class="order-popup-item-r"> 222</div>
           </div>
@@ -135,7 +135,7 @@
       <div
         class="goods-popup-container"
         :style="{
-          'background-image': `url(${goodPopupImg})`,
+          'background-image': `url(${imgs.goodPopupImg})`,
         }"
       >
         <div class="goods-popup__txt">~ 恭喜获得 ~ </div>
@@ -160,27 +160,36 @@
   import * as lottery from '/@/api/lottery';
   import { useRoute } from 'vue-router';
   import { useCommonStore } from '/@/store/modules/common';
+
   const commonStore = useCommonStore();
   const route = useRoute();
+  const { platform } = route.query;
+  commonStore.setPlatform(platform + '');
+  if (!platform) {
+    commonStore.setPlatform('532_H5_226e13033c481015cd7621cfcacbf636');
+  }
   const sacle = document.body.clientWidth / 375;
-  const stage = reactive({
+
+  type stageType = {
+    width: string | number;
+    height: string | number;
+    showGoodsList: boolean;
+    showGoods: boolean;
+    showOrder: boolean;
+    showPrize: boolean;
+    goodsList: any;
+    salePrice: string;
+    title: string;
+    prizes: any;
+    mobile: string;
+    mangheId: string;
+    checked: boolean;
+    time: number;
+  };
+  const stage = reactive<stageType>({
     width: 300 * sacle,
     height: 300 * sacle,
-    ...mhImg({
-      bgImg: 'h5/lottery/bg.jpg',
-      titleImg: 'h5/lottery/title.png',
-      tagImg: 'h5/lottery/tag.png',
-      checkImg: 'h5/lottery/check.png',
-      checkedImg: 'h5/lottery/checked.png',
-      wechatImg: 'h5/lottery/wechat.png',
-      alipayImg: 'h5/lottery/alipay.png',
-      btnGImg: 'h5/lottery/btn-g.gif',
-      licjBgImg: 'h5/lottery/licj-bg.png',
-      goodPopupImg: 'h5/lottery/good-popup.png',
-      licjLookImg: 'h5/lottery/licj-look.png',
-      prizePopupImg: 'h5/lottery/prize-popup.png',
-      closeImg: 'miniprogram/common/close.png',
-    }),
+
     showGoodsList: false,
     showGoods: false,
     showOrder: false,
@@ -196,6 +205,19 @@
   });
   const imgs: any = mhImg({
     licjBtnImg: 'h5/lottery/licj-btn.png',
+    bgImg: 'h5/lottery/bg.jpg',
+    titleImg: 'h5/lottery/title.png',
+    tagImg: 'h5/lottery/tag.png',
+    checkImg: 'h5/lottery/check.png',
+    checkedImg: 'h5/lottery/checked.png',
+    wechatImg: 'h5/lottery/wechat.png',
+    alipayImg: 'h5/lottery/alipay.png',
+    btnGImg: 'h5/lottery/btn-g.gif',
+    licjBgImg: 'h5/lottery/licj-bg.png',
+    goodPopupImg: 'h5/lottery/good-popup.png',
+    licjLookImg: 'h5/lottery/licj-look.png',
+    prizePopupImg: 'h5/lottery/prize-popup.png',
+    closeImg: 'miniprogram/common/close.png',
   });
 
   let {
@@ -213,19 +235,6 @@
     prizes,
     checked,
     time,
-    wechatImg,
-    alipayImg,
-    checkImg,
-    checkedImg,
-    prizePopupImg,
-    goodPopupImg,
-    licjBgImg,
-    bgImg,
-    closeImg,
-    licjLookImg,
-    titleImg,
-    tagImg,
-    btnGImg,
   } = toRefs(stage);
 
   onMounted(async () => {
@@ -238,18 +247,14 @@
       time.value = countime1;
     }
 
-    const { platform } = route.query;
-    commonStore.setPlatform(platform + '');
-    if (!platform) {
-      commonStore.setPlatform('547_WX_7fbd813ef6762e0e813f39a2c653236d');
-    }
+    console.log('route.query', route.query);
+
     const { data } = await lottery.productList({});
 
     const value = data.value;
     if (value) {
       const mangheDtlBean = value.mangheDtlBean;
       const productList = mangheDtlBean.productList;
-
       title.value = value.winTitle;
       salePrice.value = mangheDtlBean.salePrice;
       mangheId.value = mangheDtlBean.mangheId;
@@ -474,20 +479,23 @@
     });
   }
 
-  function launchGoodsPopup() {
-    showGoods.value = true;
-  }
+  // function launchGoodsPopup() {
+  //   showGoods.value = true;
+  // }
 
   async function buy() {
-    const { data } = await lottery.openBlindBoxToPay({
+    const res = await lottery.getWxCodeToPay({
       mangheId: mangheId.value,
     });
-    const { tradeCode } = data.value || {};
-    if (tradeCode) {
-      // const { data } = await lottery.queryHeguiPayResult({ tradeCode });
-      // console.log('buy data', data);
-      // launchGoodsPopup();
-    }
+    // const { data } = await lottery.openBlindBoxToPay({
+    //   mangheId: mangheId.value,
+    // });
+    // const { tradeCode } = data.value || {};
+    // if (tradeCode) {
+    //   // const { data } = await lottery.queryHeguiPayResult({ tradeCode });
+    //   // console.log('buy data', data);
+    //   // launchGoodsPopup();
+    // }
   }
 </script>
 

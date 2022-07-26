@@ -45,5 +45,6 @@ export default function ({ command }: ConfigEnv): UserConfigExport {
         },
       },
     },
+    // base: 'https://img01.wux7.com/h5',
   };
 }
