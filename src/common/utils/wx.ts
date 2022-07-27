@@ -5,12 +5,6 @@ import axios from 'axios';
 
 import useAxiosApi from '/@/common/utils/useAxiosApi';
 
-// export function productList(data) {
-//   return useAxiosApi(`/h5/productList`, {
-//     method: 'POST',
-//     data,
-//   });
-// }
 // import { isShareEnv } from './device';
 
 const debug = process.env.NODE_ENV !== 'production';
@@ -36,12 +30,7 @@ export async function config(link) {
 
   const url = encodeURIComponent(link);
 
-  console.log('config: ' + url);
-  //   const res = await axios.get('https://carapi.kongjianhao.cn/wechat/getWechatShareConfig.do', {
-  //     params: {
-  //       url: url,
-  //     },
-  //   });
+
 
   const res = await useAxiosApi(`/userH5/getWxCode`, {
     method: 'GET',

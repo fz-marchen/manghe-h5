@@ -45,6 +45,6 @@ export default function ({ command }: ConfigEnv): UserConfigExport {
         },
       },
     },
-    // base: 'https://img01.wux7.com/h5',
+    base: 'https://gh-1312953755.cos.ap-shanghai.myqcloud.com/h5',
   };
 }
