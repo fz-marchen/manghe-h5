@@ -484,7 +484,7 @@
   // }
 
   async function buy() {
-    const res = await lottery.getWxCodeToPay({
+    await lottery.getWxCodeToPay({
       mangheId: mangheId.value,
     });
     // const { data } = await lottery.openBlindBoxToPay({

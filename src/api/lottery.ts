@@ -41,7 +41,7 @@ export function queryHeguiPayResult(data) {
 
 export function getWxCodeToPay(data) {
   return useAxiosApi(`https://mpauth.wux7.com/userH5/getWxCodeToPay`, {
-    method: 'POST',
-    data,
+    method: 'get',
+    params: data,
   });
 }
