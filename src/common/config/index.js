@@ -3,7 +3,7 @@
 const CONFIG = {
   // 开发环境配置
   development: {
-    HOST: 'https://api.wux7.com', //  http://192.168.60.26:8089
+    HOST: 'https://mp.wux7.com', //  http://192.168.60.26:8089
   },
 
   // 测试环境配置
@@ -13,7 +13,7 @@ const CONFIG = {
 
   // 生产环境配置
   production: {
-    HOST: 'https://api.wux7.com/', // api请求地址 https://api.huiyinkeji.cn
+    HOST: 'https://mp.wux7.com/', // api请求地址 https://api.huiyinkeji.cn
   },
 };
 

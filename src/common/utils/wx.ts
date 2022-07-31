@@ -192,7 +192,8 @@ export function wxPay(paydata) {
         // 支付成功后的回调函数
         if (res.errMsg == 'chooseWXPay:ok') {
           // 支付成功
-          // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+          // 使用
+          以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
         } else {
         }
       },
@@ -205,6 +206,40 @@ export default {
   ready,
   share,
 };
+
+
+// onBridgeReady () {
+//   console.log('调用微信支付WeixinJSBridge')
+//   var vm = this
+//   WeixinJSBridge.invoke(
+//     'getBrandWCPayRequest', { // 下面参数内容都是后台返回的
+//     'appId': appid, // 公众号名称，由商户传入
+//     'timeStamp': time, // 时间戳
+//     'nonceStr': nonce_str, // 随机串
+//     'package': `prepay_id=${prepay_id}`, // 预支付id
+//     'signType': signType, // 微信签名方式
+//     'paySign': sign, // 微信签名
+//   },
+//     function (res) {
+//       // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+
+//       // JSON.stringify(res);
+//       if (res.err_msg == "get_brand_wcpay_request:ok") {
+  
+//         vm.$message.success("支付成功") // 使用alert来弹窗 支付成功  是没有反应的。所以这里改为框架页面的弹窗就好了。注意必须要上这个微信浏览器内置事件外 转this指向才能弹窗
+//         vm.isDisabledSubmitBtn = false;
+//       } else if (res.err_msg == "get_brand_wcpay_request:cancel") {
+
+//         alert('支付取消');
+//         vm.isDisabledSubmitBtn = false;
+
+//       } else {
+//         alert('付款失败');
+//         vm.isDisabledSubmitBtn = false;
+//       }
+//     }
+//   )
+// }
 
 // const plugin = (Vue) => {
 //   if (plugin.install) {

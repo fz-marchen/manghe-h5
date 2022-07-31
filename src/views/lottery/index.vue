@@ -22,6 +22,7 @@
           :height="height"
           :defaultStyle="defaultStyle"
           :defaultConfig="defaultConfig"
+          :activeStyle="activeStyle"
           :blocks="blocks"
           :prizes="prizes"
           :buttons="buttons"
@@ -32,7 +33,7 @@
       </div>
     </div>
 
-    <div class="lottery-rule"> 规则 </div>
+    <div class="lottery-rule" @click="openRulePopup"> 规则 </div>
     <van-popup v-model:show="showGoodsList" class="goods-list-popup">
       <div class="goods-list-popup-container">
         <div class="goods-list-popup-header">
@@ -128,6 +129,7 @@
         </div>
         <div class="order-popup__line"></div>
         <div class="order-popup__btn" @click="buy">立即付款</div>
+        <!-- <van-button type="danger" @click="buy">立即付款</van-button> -->
       </div>
     </van-popup>
 
@@ -144,6 +146,10 @@
         <div class="goods-popup__agrin">再来一次</div>
         <div class="goods-popup__th">马上提货</div>
       </div>
+    </van-popup>
+
+    <van-popup v-model:show="showRule" class="rule-popup">
+      <div class="rule-popup-container"> rule </div>
     </van-popup>
 
     <!-- <div @click="launchGoodsPopup">打开商品</div>
@@ -185,11 +191,12 @@
     mangheId: string;
     checked: boolean;
     time: number;
+    loading: boolean;
+    showRule: boolean;
   };
   const stage = reactive<stageType>({
     width: 300 * sacle,
     height: 300 * sacle,
-
     showGoodsList: false,
     showGoods: false,
     showOrder: false,
@@ -202,6 +209,8 @@
     mangheId: '',
     checked: true,
     time: 0,
+    loading: false,
+    showRule: false,
   });
   const imgs: any = mhImg({
     licjBtnImg: 'h5/lottery/licj-btn.png',
@@ -235,6 +244,8 @@
     prizes,
     checked,
     time,
+    loading,
+    showRule,
   } = toRefs(stage);
 
   onMounted(async () => {
@@ -262,121 +273,144 @@
         {
           x: 0,
           y: 0,
-          borderRadius: '0px',
+          borderRadius: '6px',
           imgs: [
             {
               src: productList[0].thumbnailImgUrl,
-              width: '96%',
-              height: '96%',
-              top: '2%',
-              left: '2%',
-
-              // top: '25%',
+              // width: '96%',
+              // height: '96%',
+              // top: '2%',
+              // left: '2%',
+              width: '100%',
+              height: '100%',
+              top: '0',
+              left: '0',
             },
           ],
         },
         {
           x: 1,
           y: 0,
-          borderRadius: '0px',
+          borderRadius: '6px',
           imgs: [
             {
               src: productList[1].thumbnailImgUrl,
-              width: '96%',
-              height: '96%',
-              // top: '25%',
-              top: '2%',
-              left: '2%',
+              // width: '96%',
+              // height: '96%',
+              // top: '2%',
+              // left: '2%',
+              width: '100%',
+              height: '100%',
+              top: '0',
+              left: '0',
             },
           ],
         },
         {
           x: 2,
           y: 0,
-          borderRadius: '0px',
+          borderRadius: '6px',
           imgs: [
             {
               src: productList[2].thumbnailImgUrl,
-              width: '96%',
-              height: '96%',
-              // top: '25%',
-              top: '2%',
-              left: '2%',
+              // width: '96%',
+              // height: '96%',
+              // top: '2%',
+              // left: '2%',
+              width: '100%',
+              height: '100%',
+              top: '0',
+              left: '0',
             },
           ],
         },
         {
           x: 2,
           y: 1,
-          borderRadius: '0px',
+          borderRadius: '6px',
           imgs: [
             {
               src: productList[3].thumbnailImgUrl,
-              width: '96%',
-              height: '96%',
-              // top: '25%',
-              top: '2%',
-              left: '2%',
+              // width: '96%',
+              // height: '96%',
+              // top: '2%',
+              // left: '2%',
+              width: '100%',
+              height: '100%',
+              top: '0',
+              left: '0',
             },
           ],
         },
         {
           x: 2,
           y: 2,
-          borderRadius: '0px',
+          borderRadius: '6px',
           imgs: [
             {
               src: productList[4].thumbnailImgUrl,
-              width: '96%',
-              height: '96%',
-              // top: '25%',
-              top: '2%',
-              left: '2%',
+              // width: '96%',
+              // height: '96%',
+              // top: '2%',
+              // left: '2%',
+              width: '100%',
+              height: '100%',
+              top: '0',
+              left: '0',
             },
           ],
         },
         {
           x: 1,
           y: 2,
-          borderRadius: '0px',
+          borderRadius: '6px',
           imgs: [
             {
               src: productList[5].thumbnailImgUrl,
-              width: '96%',
-              height: '96%',
-              // top: '25%',
-              top: '2%',
-              left: '2%',
+              // width: '96%',
+              // height: '96%',
+              // top: '2%',
+              // left: '2%',
+              width: '100%',
+              height: '100%',
+              top: '0',
+              left: '0',
             },
           ],
         },
         {
           x: 0,
           y: 2,
-          borderRadius: '0px',
+          borderRadius: '6px',
           imgs: [
             {
               src: productList[6].thumbnailImgUrl,
-              width: '96%',
-              height: '96%',
-              // top: '25%',
-              top: '2%',
-              left: '2%',
+              // width: '96%',
+              // height: '96%',
+              // top: '2%',
+              // left: '2%',
+              width: '100%',
+              height: '100%',
+              top: '0',
+              left: '0',
             },
           ],
         },
         {
           x: 0,
           y: 1,
-          borderRadius: '0px',
+          borderRadius: '6px',
           imgs: [
             {
               src: productList[7].thumbnailImgUrl,
-              width: '96%',
-              height: '96%',
-              // top: '25%',
-              top: '2%',
-              left: '2%',
+              // width: '96%',
+              // height: '96%',
+              // top: '2%',
+              // left: '2%',
+              width: '100%',
+              height: '100%',
+              top: '0',
+              left: '0',
             },
           ],
         },
@@ -421,6 +455,11 @@
   ];
   const defaultStyle = {
     // background: 'red',
+    // background: 'red',
+    gutter: '20px',
+  };
+  const activeStyle = {
+    background: '#FFD501',
   };
   const defaultConfig = {
     gutter: 5,
@@ -464,6 +503,9 @@
   function onCheck() {
     checked.value = !checked.value;
   }
+  function openRulePopup() {
+    showRule.value = !showRule.value;
+  }
 
   async function loginBytel() {
     const { data, then } = lottery.addH5User({
@@ -484,9 +526,20 @@
   // }
 
   async function buy() {
-    await lottery.getWxCodeToPay({
-      mangheId: mangheId.value,
-    });
+    if (loading.value) return;
+    loading.value = true;
+    try {
+      const res = await lottery.getWxCodeToPay({
+        mangheId: mangheId.value,
+      });
+
+      window.location.href = res.data.value + '';
+    } catch (error) {
+      console.log('[getWxCodeToPay error]: ', error);
+    } finally {
+      loading.value = false;
+    }
+
     // const { data } = await lottery.openBlindBoxToPay({
     //   mangheId: mangheId.value,
     // });
@@ -500,6 +553,16 @@
 </script>
 
 <style lang="scss">
+  .lottery {
+    .goods-list-popup {
+      background-color: transparent !important;
+    }
+    .prize-popup {
+      background-color: transparent !important;
+    }
+  }
+</style>
+<style lang="scss" scoped>
   .lottery {
     position: relative;
     width: 750px;
